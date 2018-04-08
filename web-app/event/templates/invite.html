@@ -1,0 +1,138 @@
+{% extends 'eventbase.html' %}
+
+{% block my_css %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'event/css/invite.css' %}">
+{% endblock my_css %}
+
+{% block title %}Edit Invitation{% endblock %}
+
+
+
+
+{% block content %}
+
+    <div class="x_panel">
+    <div class="x_title">
+        <h2>Add Invitation </h2>
+    </div>
+    <div class="x_content">
+        <br>
+        <form class="form-horizontal form-label-left">
+
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">User Email</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                    <input type="text" class="form-control" placeholder="Default Input", id = "email-input">
+                </div>
+                <span class="help-block" id="help-email"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Role</label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                          <select class="form-control", id="select-role">
+                            <option>owner</option>
+                            <option>vendor</option>
+                            <option>guest</option>
+                          </select>
+                        </div>
+                <span class="help-block" id="help-role"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                          <button type="button" class="btn btn-primary" id="submit_btn">Submit</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+    <div class="clearfix"></div>
+    <p></p>
+    <div class="panel panel-success">
+        <div class="panel-heading">People</div>
+        <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in user_list %}
+                <tr id="user_{{ user.id }}">
+                    <td>{{ user.user_id.email }}</td>
+                    <td>{{ user.user_id.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td><a href="javascript:void (0)" class="delete">Delete</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}
+
+
+
+
+{% block my_js %}
+    <script>
+
+$("#submit_btn").click(function () {
+    var email=$("#email-input");
+    var options=$("#select-role option:selected");
+
+
+
+    var $help1 = $("#help-email").html('');
+    var $help2 = $("#help-role").html('');
+
+    if (!email.val()) {
+        $help1.html('Input Email');
+    }
+    else {
+
+        $.post({
+            url: './',
+            headers: {"X-CSRFToken": $.cookie('csrftoken')},
+            data: JSON.stringify({"email": email.val(), "role": options.text()}),
+            contentType: 'application/json',
+            success: function (res_dict) {
+                if (res_dict['status']) {
+                    var userid = res_dict['userid'];
+                    var username = res_dict['username']
+                    var role = res_dict['role'];
+
+                    var s = '<tr id="user_' + userid + '">\n' +
+                        '        <td>' + email.val() + '</td>\n' +
+                        '        <td>' + username + '</td>\n' +
+                        '        <td>' + options.text() + '</td>\n' +
+                        '        <td><a href="javascript:void (0)" class="delete">Delete</a></td>\n' +
+                        '    </tr>';
+                    $("tbody").append(s);
+
+                }
+                else {
+                    var error_msg = res_dict['error_msg'];
+                    $help2.html(error_msg);
+                    //UNIQUE constraint failed: ...
+                    if (new RegExp("UNIQUE constraint failed").test(error_msg)) {
+                        alert('该问卷已存在，请勿重复添加！')
+                    }
+                }
+            }
+        });
+
+    }
+});
+
+
+
+    </script>
+
+{% endblock my_js %}

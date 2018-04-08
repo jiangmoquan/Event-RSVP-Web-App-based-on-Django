@@ -1,0 +1,48 @@
+{% extends 'eventbase.html' %}
+
+{% block my_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{%  static 'event/css/edit.css' %}">
+{% endblock %}
+
+{% block title %}Reply{% endblock %}
+
+{% block content %}
+    <div class="option pull-right">
+        <button class="btn btn-primary" id="save">Save</button>
+    </div>
+    <div class="clearfix"></div>
+
+    <form class="form-horizontal" method="post" novalidate>
+        <ol>
+            {% for dict_item in que_ans_form %}
+                <div class="questionItem" qid="{{ dict_item.que_obj.id }}" q_type="{{ dict_item.que_obj.type }}">
+                    <li>
+
+
+                        <div class="form-group">
+                            <label class="col-md-1 col-md-offset-1 control-label">Question</label>
+                            <div class="col-md-7">
+                                {{ dict_item.que_form.title }}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-md-1 col-md-offset-1 control-label">Finalize</label>
+                            <div class="col-md-7">
+                                {{ dict_item.que_form.finalized }}
+                            </div>
+
+                        </div>
+
+                    </li>
+                </div>
+            {% endfor %}
+        </ol>
+    </form>
+{% endblock content %}
+
+{% block my_js %}
+    <script src="{% static 'event/js/finalize.js' %}"></script>
+{% endblock %}

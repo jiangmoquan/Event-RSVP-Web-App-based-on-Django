@@ -1,0 +1,30 @@
+.glyphicon-remove:hover {
+    color: tomato;
+}
+
+.questionItem ul {
+    margin-left: 80px;
+}
+
+.removeQue, .removeOpt {
+    display: inline-block;
+    padding-top: 8px;
+}
+
+form.form-horizontal ol {
+    list-style: none;
+    padding: 0;
+    /*数字自增*/
+    counter-reset: sectioncounter
+}
+
+ol > .questionItem > li {
+    background-color: #f9f9f9;
+}
+
+ol > .questionItem > li:before {
+    content: 'Question' counter(sectioncounter) ':';
+    counter-increment: sectioncounter;
+    font-size: 18px;
+    color: #d4d4d4;
+}

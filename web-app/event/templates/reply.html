@@ -1,0 +1,63 @@
+{% extends 'eventbase.html' %}
+
+{% block my_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{%  static 'event/css/edit.css' %}">
+{% endblock %}
+
+{% block title %}Reply{% endblock %}
+
+{% block content %}
+    <div class="option pull-right">
+        <button class="btn btn-primary" id="save">Save</button>
+    </div>
+    <div class="clearfix"></div>
+
+    <form class="form-horizontal" method="post" novalidate>
+        <ol>
+            {% for dict_item in que_ans_form %}
+                <div class="questionItem" qid="{{ dict_item.que_obj.id }}" q_type="{{ dict_item.que_obj.type }}">
+                    <li>
+
+
+                        <div class="form-group">
+                            <label class="col-md-1 col-md-offset-1 control-label">Question</label>
+                            <div class="col-md-7">
+                                {{ dict_item.que_form.title }}
+                                {%  if dict_item.que_obj.type == 1 %}
+                                    <label >Max Value:</label>
+                                    <label name="max_value">{{ dict_item.max_value }}</label>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if dict_item.que_obj.finalized %}
+                         <div class="form-group">
+                            <label class="col-md-7">This Question has been finalized!</label>
+                            </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label class="col-md-1 col-md-offset-1 control-label">Answer</label>
+                            <div class="col-md-7">
+
+                                {%  if dict_item.que_obj.type == 1 %}
+                                    {{ dict_item.ans_form.value }}
+                                {%  elif dict_item.que_obj.type == 2 %}
+                                    {{ dict_item.choice_form }}
+                                {% else %}
+                                    {{ dict_item.ans_form.content }}
+                                {% endif %}
+                            </div>
+
+                        </div>
+                        {% endif %}
+                    </li>
+                </div>
+            {% endfor %}
+        </ol>
+    </form>
+{% endblock content %}
+
+{% block my_js %}
+    <script src="{% static 'event/js/reply.js' %}"></script>
+{% endblock %}
